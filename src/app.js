@@ -10,13 +10,21 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.get('/Parking', async (req, res) => {
-    try {
-
-        const parkingData = await ParkingData.find({});
-        res.status(200).json(parkingData);
-    } catch (error) {
-        res.status(500).json({ message: error.message })
+    const userKey = (req.query.key)
+    if (userKey === masterKey) {
+        try {
+            const parkingData = await ParkingData.find({});
+            res.status(200).json(parkingData);
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
     }
+    else {
+        res
+            .status(404)
+            .json({ error: "You are not authorized" })
+    }
+
 })
 
 app.get('/Parking/:id', async (req, res) => {
@@ -63,7 +71,7 @@ app.put('/Parking/:id', async (req, res) => {
 
 app.delete('/Parking/:id', async (req, res) => {
     const userKey = (req.query.key)
-        if (userKey === masterKey) {
+    if (userKey === masterKey) {
 
         try {
             const userKey = (req.query.key)
@@ -92,8 +100,8 @@ mongoose.
     connect('mongodb+srv://admin:1234@api.w1sen0x.mongodb.net/?retryWrites=true&w=majority')
     .then(() => {
         console.log('connected to MongoDB')
-        app.listen(3000, () => {
-            console.log(`Node API app is running on port 3000`)
+        app.listen(4000, () => {
+            console.log(`Node API app is running on port 4000`)
         });
     }).catch((error) => {
         console.log(error)
